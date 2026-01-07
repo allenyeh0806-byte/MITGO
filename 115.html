@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <!-- 適合 GitHub Pages 託管：使用相對路徑與單一檔案架構，避免路徑錯誤 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>115年度團隊工作分配表</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft JhengHei', 'PingFang TC', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-bottom: 40px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 2px;
+        }
+        
+        /* 總覽區塊 */
+        .summary-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px);
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .summary-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .summary-value {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        
+        /* 頁籤容器 */
+        .tabs-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            overflow: hidden;
+            min-height: 500px;
+        }
+        
+        .tabs-header {
+            display: flex;
+            background: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+            overflow-x: auto; /* 允許手機版橫向滑動 */
+            white-space: nowrap;
+        }
+        
+        .tab-button {
+            flex: 1;
+            min-width: 120px;
+            padding: 20px;
+            background: transparent;
+            border: none;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            position: relative;
+        }
+        
+        .tab-button:hover {
+            background: #f1f5f9;
+            color: #667eea;
+        }
+        
+        .tab-button.active {
+            color: #667eea;
+            background: white;
+        }
+        
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px; /* 蓋住 border-bottom */
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #667eea;
+        }
+        
+        /* 內容區域 */
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.4s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 個人標頭 */
+        .person-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .person-name {
+            font-size: 1.8em;
+            color: #667eea;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .stats-badges {
+            display: flex;
+            gap: 10px;
+        }
+
+        .badge {
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .badge-count { background: #667eea; }
+        .badge-budget { background: #f59e0b; }
+        
+        /* 專案卡片 */
+        .project-card {
+            background: #f8fafc;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .project-card:hover {
+            background: #fff;
+            border-left-width: 8px;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .project-title {
+            font-size: 1.3em;
+            color: #1e293b;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .project-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.95em;
+            background: #fff;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .detail-label {
+            background: #e0e7ff;
+            color: #4338ca;
+            padding: 4px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-right: 10px;
+            min-width: 60px;
+            text-align: center;
+            font-size: 0.85em;
+        }
+        
+        .detail-value {
+            color: #475569;
+            font-weight: 500;
+        }
+        
+        .project-notes {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.95em;
+            color: #475569;
+            line-height: 1.6;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .notes-title {
+            font-weight: bold;
+            color: #334155;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* 列印設定 */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .tabs-header, .summary-section {
+                display: none;
+            }
+            .tab-content {
+                display: block !important;
+                page-break-after: always;
+            }
+            .project-card {
+                page-break-inside: avoid;
+                border: 1px solid #ddd;
+            }
+            h1 {
+                color: #000;
+                text-shadow: none;
+            }
+        }
+        
+        /* 手機版響應式 */
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8em; }
+            .person-header { flex-direction: column; align-items: flex-start; }
+            .tab-button { font-size: 1em; padding: 15px 10px; }
+            .project-details { grid-template-columns: 1fr; }
+            .summary-section { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 115年度團隊工作分配表</h1>
+        
+        <div class="summary-section">
+            <h2 style="color: #667eea; margin-bottom: 15px; border-left: 4px solid #667eea; padding-left: 10px;">年度總覽</h2>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="summary-label">總預算</div>
+                    <div class="summary-value">2,190萬</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">工作項目</div>
+                    <div class="summary-value">21項</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">負責人數</div>
+                    <div class="summary-value">5人</div>
+                </div>
+                <!-- 可以自動計算或手動填寫 -->
+            </div>
+        </div>
+        
+        <div class="tabs-container">
+            <div class="tabs-header">
+                <button class="tab-button active" onclick="openTab(event, 'xiaofen')">曉芬</button>
+                <button class="tab-button" onclick="openTab(event, 'jixian')">季嫺</button>
+                <button class="tab-button" onclick="openTab(event, 'liang')">良哥</button>
+                <button class="tab-button" onclick="openTab(event, 'b')">B哥</button>
+                <button class="tab-button" onclick="openTab(event, 'yiwei')">毅緯</button>
+            </div>
+            
+            <!-- 曉芬的內容 -->
+            <div id="xiaofen" class="tab-content active">
+                <div class="person-header">
+                    <span class="person-name">👤 曉芬</span>
+                    <div class="stats-badges">
+                        <span class="badge badge-count">3 項目</span>
+                        <span class="badge badge-budget">85 萬</span>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-title">知名度調查</div>
+                    <div class="project-details">
+                        <div class="detail-item">
+                            <span class="detail-label">KPI</span>
+                            <span class="detail-value">1式</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">時間</span>
+                            <span class="detail-value">11月30日</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">預算</span>
+                            <span class="detail-value">75萬</span>
+                        </div>
+                    </div>
+                    <div class="project-notes">
+                        <div class="notes-title">📌 重點說明：</div>
+                        • 114年達成知名度90%、認知度87%、信賴度70.8%、行動度61%<br>
+                        • 115年保持維持或略增，無KPI<br>
+                        • 第三方專業機構(中興大學承包)
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-title">滿意度調查</div>
+                    <div class="project-details">
+                        <div class="detail-item">
+                            <span class="detail-label">KPI</span>
+                            <span class="detail-value">1式</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">時間</span>
+                            <span class="detail-value">11月30日</span>
+                        </div>
+                    </div>
+                    <div class="project-notes">
+                        <div class="notes-title">📌 重點說明：</div>
+                        • 委員關切：行動度需增強，建議補充該指標詳細說明<br>
+                        • 退場問題：題項請與宜樺討論該新增或調整問項
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-title">機關說明會及B2B推廣活動</div>
+                    <div class="project-details">
+                        <div class="detail-item">
+                            <span class="detail-label">KPI</span>
+                            <span class="detail-value">3場次</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">時間</span>
+                            <span class="detail-value">11月30日</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">預算</span>
+                            <span class="detail-value">10萬</span>
+                        </div>
+                    </div>
+                    <div class="project-notes">
+                        <div class="notes-title">📌 重點說明：</div>
+                        • 政府機關、國營事業目標3場 (預計10月辦理)<br>
+                        • 優規: 民間企業(委託科學園區)1場
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 季嫺的內容 -->
+            <div id="jixian" class="tab-content">
+                <div class="person-header">
+                    <span class="person-name">👤 季嫺</span>
+                    <div class="stats-badges">
+                        <span class="badge badge-count">8 項目</span>
+                        <span class="badge badge-budget">1,500 萬</span>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-title">行銷輔導申請須知</div>
+                    <div class="project-details">
+                        <div class="detail-item">
+                            <span class="detail-label">KPI</span>
+                            <span class="detail-value">1式</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">時間</span>
+                            <span class="detail-value">1月31日</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">預算</span>
+                            <span class="detail-value">1,500萬</span>
+                        </div>
+                    </div>
+                    <div class="project-notes">
+                        <div class="notes-title">📌 重點說明：</div>
+                        • 新增跨境行銷拓展主題，上限可到200萬；小案50萬至多3案<br>
+                        • 輔導業者資格略為放寬至20%，但期末需繳交其申請MIT標章或納入需求單證明<br>
+                        • 必要條件：AI<br>
+                        • 加分條件：配合環保ESG等議題、鼓勵政府機關企業優先採購
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-title">行銷輔導案件數</div>
+                    <div class="project-details">
+                        <div class="detail-item">
+                            <span class="detail-label">KPI</span>
+                            <span class="detail-value">8案、172家</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">時間</span>
+                            <span class="detail-value">5/31、11/30</span>
+                        </div>
+                    </div>
+                    <div class="project-notes">
+                        <div class="notes-title">📌 重點說明：</div>
+                        • 期初審查 (預計5月底前辦理完畢)<br>
+                        • 期末審查 (11/30)<br>
+                        • 重點邀約廠商來申請(依經費規模建議至多8-10家，新通路如樂天)
+                    </div>
+                </div>
+                
+                <!-- 其他季嫺的項目 -->
+                <div class="project-card"><div class="project-title">策略規劃 (國內)</div><div class="project-details"><div class="detail-item"><span class="detail-label">KPI</span><span class="detail-value">1式</span></div><div class="detail-item"><span class="detail-label">時間</span><span class="detail-value">2月28日</span></div></div><div class="project-notes"><div class="notes-title">📌 重點說明：</div>• 國內市場拓展年度規劃(含114年成效檢討、115年推廣做法)</div></div>
+                
+                <div class="project-card"><div class="project-title">協力店申請須知</div><div class="project-details"><div class="detail-item"><span class="detail-label">KPI</span><span class="detail-value">1式</span></div><div class="detail-item"><span class="detail-label">時間</span><span class="detail-value">1月31日</span></div></div></div>
+
+                <div class="project-card"><div class="project-title">協力店通路數</div><div class="project-details"><div class="detail-item"><span class="detail-label">KPI</span><span class="detail-value">20家</span></div><div class="detail-item"><span class="detail-label">時間</span><span class="detail-value">12月31日</span></div></div><div class="project-notes"><div class="notes-title">📌 重點說明：</div>• 追蹤通路數、門市數、銷售額<br>• 現有通路: 23家</div></div>
+
+                <div class="project-card"><div class="project-title">國內電商</div><div class="project-details"><div class="detail-item"><span class="detail-label">KPI</span><span class="detail-value">5家</span></div><div class="detail-item"><span class="detail-label">時間</span><span class="detail-value">12月31日</span></div></div><div class="project-notes"><div class="notes-title">📌 重點說明：</div>• 現有19家</div></div>
+
+                <div class="project-card"><div class="project-title">策略規劃 (海外)</div><div class="project-details"><div class="detail-item"><span class="detail-label">KPI</span><span class="detail-value">1式</span></div><div class="detail-item"><span class="detail-label">時間</span><span class="detail-value">2月25日</span></div></div><div class="project-notes"><div class="notes-title">📌 重點說明：</div>• 海外市場拓展年度規劃(含114年成效檢討、115年推廣做法)</div></div>
+                
+                <div class="project-card"><div class="project-title">跨境電商平台數</div><div class="project-details"><div class="detail-item"><span class="detail-label">KPI</span><span class="detail-value">1個</span></div><div class="detail-item"><span class="detail-label">時間</span><span class="detail-value">12月31日</span></div></div><div class="project-notes"><div class="notes-title">📌 重點說明：</div>• 追蹤通路數、銷售額<br>• 潛在合作夥伴(優嘖、日本蔦屋)</div></div>
+            </div>
+            
+            <!-- 良哥的內容 -->
+            <div id="liang" class="tab-content">
+                <div class="person-header">
+                    <span class="person-name">👤 良哥</span>
+                    <div class="stats-badges">
+                        <span class="badge badge-count">6 項目</span>
+                        <span class="badge badge-budget">490 萬</span>
+                    </div>
+                </div>
+                
+                <div class="project-card"><div class="project-title">廣宣品規劃製作</div><div class="project-details"><div class="detail-item"><span class="detail-label">時間</span><span class="detail-value">1月31日</span></div><div class="detail-item"><span class="detail-label">預算</span><span class="detail-value">50萬</span></div></div><div class="project-notes"><div class="notes-title">📌 重點說明：</div>• 廣宣品製作及運用規劃 (1/31)<br>• 上工作聯繫單，條列可能會做的產品項目</div></div>
+
+                <div class="project-card"><div class="project-title">遴選會議</div><div class="project-details"><div class="detail-item"><span class="detail-label">KPI</span><span class="detail-value">1式</span></div><div class="detail-item"><span class="detail-label">時間</span><span class="detail-value">2月28日</span></div><div class="detail-item"><span class="detail-label">預算</span><span class="detail-value">35萬</span></div></div><div class="project-notes"><div class="notes-title">📌 重點說明：</div>• 選拔活動規劃(含113年成效檢討、114年推廣做法)(2/28)<br>• 申請須知修訂 (2/28)</div></div>
+
+                <div class="project-card"><div class="project-title">專書</div><div class="project-details"><div class="detail-item"><span class="detail-label">KPI</span><span class="detail-value">1式</span></div><div class="detail-item"><span class="detail-label">時間</span><span class="detail-value">11月30日</span></div><div class="detail-item"><span class="detail-label">預算</span><span class="detail-value">100萬</span></div></div><div class="project-notes"><div class="notes-title">📌 重點說明：</div>• 目標40款</div></div>
+
+                <div class="project-card"><div class="project-title">活動 (金選)</div><div class="project-details"><div class="detail-item"><span class="detail-label">KPI</span><span class="detail-value">2場次</span></div><div class="detail-item"><span class="detail-label">時間</span><span class="detail-value">10月31日</span></div><div class="detail-item"><span class="detail-label">預算</span><span class="detail-value">185萬</span></div></div><div class="project-notes"><div class="notes-title">📌 重點說明：</div>• 形式：故宮南院(結合高鐵嘉義站)<br>• 結合【MIT x 故宮】新聯名產品，於6月底、7月初辦理<br>• 預算細項：高鐵85萬、展售活動100萬</div></div>
+
+                <div class="project-card"><div class="project-title">金選行銷資源</div><div class="project-details"><div class="detail-item"><span class="detail-label">預算</span><span class="detail-value">120萬</span></div></div><div class="project-notes"><div class="notes-title">📌 重點說明：</div>• 6支業者專訪(構思創意主題影片，3家1支)<br>• 委員要求：1支通路影片(MIT歷程，推薦鞋全家福)</div></div>
+
+                <div class="project-card"><div class="project-title">115年整體廣宣規劃</div><div class="project-details"><div class="detail-item"><span class="detail-label">KPI</span><span class="detail-value">1式</span></div><div class="detail-item"><span class="detail-label">時間</span><span class="detail-value">1月31日</span></div></div><div class="project-notes"><div class="notes-title">📌 重點說明：</div>• 檢討:114年 老齡族群(50-59)下降、中南部略降<br>• 留意委員意見：Slogan、樂齡族群、新住民、AI行銷、福委會等議題</div></div>
+            </div>
+            
+            <!-- B哥的內容 -->
+            <div id="b" class="tab-content">
+                <div class="person-header">
+                    <span class="person-name">👤 B哥</span>
+                    <div class="stats-badges">
+                        <span class="badge badge-count">3 項目</span>
+                        <span class="badge badge-budget">115 萬</span>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-title">MIT Facebook</div>
+                    <div class="project-details">
+                        <div class="detail-item">
+                            <span class="detail-label">KPI</span>
+                            <span class="detail-value">80.5萬人、互動率>150次文章36篇</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">時間</span>
+                            <span class="detail-value">1/31、12/31</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">預算</span>
+                            <span class="detail-value">75萬</span>
+                        </div>
+                    </div>
+                    <div class="project-notes">
+                        <div class="notes-title">📌 重點說明：</div>
+                        • 114年檢討與精進 (1/31)<br>
+                        • 115年年度規劃(各月發文主軸) (1/31)<br>
+                        • 粉絲數>80.5萬人 (12/31)<br>
+                        • 前台互動率達標(按讚+留言+分享達150)>36篇(12/31)
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-title">樂齡宣講</div>
+                    <div class="project-details">
+                        <div class="detail-item">
+                            <span class="detail-label">KPI</span>
+                            <span class="detail-value">10場</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">時間</span>
+                            <span class="detail-value">1/31、12/31</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">預算</span>
+                            <span class="detail-value">10萬</span>
+                        </div>
+                    </div>
+                    <div class="project-notes">
+                        <div class="notes-title">📌 重點說明：</div>
+                        • 115年規劃(依114年知名度加強中、南部區域) (1/31)<br>
+                        • 場次數 > 10場 (12/31)
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-title">社團推廣</div>
+                    <div class="project-details">
+                        <div class="detail-item">
+                            <span class="detail-label">KPI</span>
+                            <span class="detail-value">10場</span>
+                        </div>
+                         <div class="detail-item">
+                            <span class="detail-label">時間</span>
+                            <span class="detail-value">12月31日</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">預算</span>
+                            <span class="detail-value">10萬</span>
+                        </div>
+                    </div>
+                    <div class="project-notes">
+                        <div class="notes-title">📌 重點說明：</div>
+                        • 針對校園社團進行推廣 (待確認執行細節)<br>
+                        • 目標提升社群擴散力
+                    </div>
+                </div>
+            </div>
+
+            <!-- 毅緯的內容 -->
+            <div id="yiwei" class="tab-content">
+                 <div class="person-header">
+                    <span class="person-name">👤 毅緯</span>
+                    <div class="stats-badges">
+                        <span class="badge badge-count">1 項目</span>
+                        <span class="badge badge-budget">待定</span>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-title">業者升級轉型</div>
+                    <div class="project-details">
+                        <div class="detail-item">
+                            <span class="detail-label">KPI</span>
+                            <span class="detail-value">400案</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">時間</span>
+                            <span class="detail-value">1月31日</span>
+                        </div>
+                    </div>
+                    <div class="project-notes">
+                        <div class="notes-title">📌 重點說明：</div>
+                        • 優化問卷題項：<br>
+                        &nbsp;&nbsp;1. 加入AI及ESG相關題項<br>
+                        &nbsp;&nbsp;2. 需分配一部分案子給競爭力中心(並請他們完成報告)
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, personName) {
+            // 隱藏所有內容
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+            
+            // 移除所有按鈕的 active 狀態
+            tablinks = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            
+            // 顯示當前選中的內容，並將按鈕設為 active
+            document.getElementById(personName).style.display = "block";
+            
+            // 加入些微延遲讓 CSS 動畫有感
+            setTimeout(() => {
+                document.getElementById(personName).classList.add("active");
+            }, 10);
+            
+            evt.currentTarget.className += " active";
+        }
+    </script>
+</body>
+</html>
